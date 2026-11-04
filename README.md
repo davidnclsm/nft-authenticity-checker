@@ -38,52 +38,64 @@ nft-authenticity-checker/
 
 ---
 
-## Einrichtung auf Windows (einmalig)
+## Einrichtung (einmalig)
+
+Die Demo läuft auf **macOS und Windows** gleich. Die npm-Befehle sind identisch, nur das Terminal und die Ordnertrennzeichen unterscheiden sich:
+
+| | macOS | Windows |
+| --- | --- | --- |
+| Terminal öffnen | `Cmd + Leertaste` → „Terminal“ | Windows-Taste → „PowerShell“ |
+| In Unterordner wechseln | `cd contracts` | `cd contracts` |
+| Eine Ebene hoch und weiter | `cd ../frontend` | `cd ..\frontend` |
+| Laufenden Prozess beenden | `Ctrl + C` | `Strg + C` |
 
 ### 1. Node.js installieren
 
-PowerShell öffnen (Windows-Taste → „PowerShell“ eintippen) und prüfen:
+Im Terminal prüfen:
 
-```powershell
+```bash
 node -v
 ```
 
-- Kommt eine Version **v20** oder höher (z. B. `v22.x.x`): passt.
-- Kommt eine Fehlermeldung oder eine ältere Version: die **LTS-Version** von <https://nodejs.org> herunterladen und installieren (alle Standardeinstellungen lassen). Danach PowerShell **schließen und neu öffnen**.
+- Kommt **v20** oder höher (z. B. `v22.x.x`): passt.
+- Kommt eine Fehlermeldung oder eine ältere Version: die **LTS-Version** von <https://nodejs.org> installieren (macOS: `.pkg`, Windows: `.msi`, Standardeinstellungen lassen). Danach das Terminal **schließen und neu öffnen**.
 
-> Falls PowerShell bei `npm` meldet *„Die Ausführung von Skripts ist auf diesem System deaktiviert“*, einmalig ausführen:
+> **Nur Windows:** Meldet PowerShell bei `npm` *„Die Ausführung von Skripts ist auf diesem System deaktiviert“*, einmalig ausführen und mit `J` bestätigen:
 > ```powershell
 > Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 > ```
-> und mit `J` bestätigen.
 
 ### 2. Projekt herunterladen
 
-Mit Git:
-
-```powershell
-cd $HOME\Desktop
+```bash
+cd ~/Desktop
 git clone https://github.com/davidnclsm/nft-authenticity-checker.git
 cd nft-authenticity-checker
 ```
 
-Ohne Git: Auf GitHub **Code → Download ZIP**, entpacken und in PowerShell mit `cd` in den Ordner wechseln.
+(Windows: `cd $HOME\Desktop` statt `cd ~/Desktop`.)
+
+Ohne Git: Auf GitHub **Code → Download ZIP**, entpacken und im Terminal mit `cd` in den Ordner wechseln. Auf dem Mac fragt `git` beim ersten Mal eventuell, ob die Xcode-Command-Line-Tools installiert werden sollen: einfach bestätigen.
 
 ### 3. Pakete installieren
 
+macOS:
+
+```bash
+cd contracts && npm install && cd ../frontend && npm install && cd ..
+```
+
+Windows (PowerShell):
+
 ```powershell
-cd contracts
-npm install
-cd ..\frontend
-npm install
-cd ..
+cd contracts; npm install; cd ..\frontend; npm install; cd ..
 ```
 
 Das dauert beim ersten Mal 1–2 Minuten (hier wird noch Internet gebraucht).
 
 ### 4. Testen, ob alles funktioniert
 
-```powershell
+```bash
 cd contracts
 npm test
 ```
@@ -94,11 +106,11 @@ Erwartet: **5 passing**. Beim ersten Mal lädt Hardhat den Solidity-Compiler her
 
 ## Demo starten (vor jeder Präsentation)
 
-Du brauchst **drei PowerShell-Fenster**. In allen zuerst in den Projektordner wechseln.
+Du brauchst **drei Terminal-Fenster** (macOS: im Terminal mit `Cmd + T` neue Tabs öffnen). In allen zuerst in den Projektordner `nft-authenticity-checker` wechseln.
 
 **Fenster 1 – lokale Blockchain starten** (bleibt offen):
 
-```powershell
+```bash
 cd contracts
 npm run chain
 ```
@@ -107,7 +119,7 @@ Es erscheinen 20 Testkonten mit je 10.000 ETH (Spielgeld). Fenster offen lassen.
 
 **Fenster 2 – Smart Contract deployen** (einmal ausführen):
 
-```powershell
+```bash
 cd contracts
 npm run deploy
 ```
@@ -116,7 +128,7 @@ Erwartet: `AuthenticNFT deployed an: 0x5FbDB2315678afecb367f032d93F642f64180aa3`
 
 **Fenster 3 – Web-App starten** (bleibt offen):
 
-```powershell
+```bash
 cd frontend
 npm run dev
 ```
@@ -125,7 +137,7 @@ Dann im Browser öffnen: **<http://localhost:3000>**
 
 Oben rechts muss ein grüner Punkt mit **„Lokale Blockchain verbunden“** stehen.
 
-> **Neu starten / zurücksetzen:** Fenster 1 mit `Strg + C` beenden und `npm run chain` erneut starten. Damit ist die Blockchain wieder leer. Danach **immer** `npm run deploy` erneut ausführen und die Seite neu laden.
+> **Neu starten / zurücksetzen:** Fenster 1 mit `Ctrl + C` (Windows: `Strg + C`) beenden und `npm run chain` erneut starten. Damit ist die Blockchain wieder leer. Danach **immer** `npm run deploy` erneut ausführen und die Seite neu laden.
 
 ---
 
@@ -200,5 +212,5 @@ Warum nicht den Perceptual Hash on-chain prüfen? Jeder neue Mint müsste mit al
 | „Lokale Blockchain nicht erreichbar“ | Fenster 1 läuft nicht → `npm run chain` im Ordner `contracts` |
 | „Noch kein Contract deployt“ | `npm run deploy` im Ordner `contracts`, dann Seite neu laden |
 | „Blockchain wurde neu gestartet“ | Nach jedem Neustart der Chain erneut `npm run deploy` |
-| Port 3000 oder 8545 belegt | Alte PowerShell-Fenster schließen oder PC neu starten |
-| `npm` wird nicht erkannt | Node.js installieren und PowerShell neu öffnen |
+| Port 3000 oder 8545 belegt | Alte Terminal-Fenster schließen (dort `Ctrl + C`) oder Rechner neu starten |
+| `npm` wird nicht erkannt / `command not found` | Node.js installieren und das Terminal neu öffnen |
