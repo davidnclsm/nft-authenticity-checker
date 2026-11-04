@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+
+# Hardhat
+contracts/artifacts/
+contracts/cache/
+contracts/typechain-types/
+contracts/coverage/
+
+# Wird von "npm run deploy" erzeugt
+frontend/public/contract.json
+
+.env
+.DS_Store
+Thumbs.db
+*.log
