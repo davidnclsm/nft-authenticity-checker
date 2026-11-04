@@ -63,6 +63,9 @@ body {
 .thumb { width: 96px; height: 96px; border-radius: 10px; object-fit: cover; background: var(--line); flex: none; border: 1px solid var(--line); }
 .thumb.empty { display: grid; place-items: center; color: var(--muted); font-size: 32px; }
 .drop .fname { font-weight: 600; word-break: break-all; }
+.drop .drop-text { flex: 1; min-width: 0; }
+.clear { flex: none; font: inherit; font-size: 15px; font-weight: 600; color: var(--bad); background: #fff; border: 1.5px solid var(--bad); border-radius: 10px; padding: 8px 12px; cursor: pointer; }
+.clear:hover { background: var(--bad-soft); }
 .drop .hint { color: var(--muted); font-size: 14px; }
 
 .field { margin-top: 14px; }
@@ -76,6 +79,7 @@ body {
 
 .btn { margin-top: 18px; width: 100%; font: inherit; font-weight: 600; font-size: 18px; padding: 13px 18px; border-radius: 12px; border: none; background: var(--ink); color: #fff; cursor: pointer; }
 .btn.accent { background: var(--accent); }
+.btn.secondary { margin-top: 14px; background: #fff; color: var(--ink); border: 1.5px solid var(--ink); font-size: 16px; padding: 10px 16px; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 
 /* Ergebnisboxen */

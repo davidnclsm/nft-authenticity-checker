@@ -152,7 +152,9 @@ Die Bilder liegen im Ordner `demo-bilder/`.
 | 3 | Bob | Dieselbe Kopie links minten | ⛔ **Vom Smart Contract abgelehnt** |
 | 4 | Bob | Rechts `3_kopie_1_pixel_geaendert.png` prüfen, dann links minten | ✓ Nicht registriert → ✓ NFT #2 erstellt. **Der Aha-Moment** |
 | 5 | – | Rechts `4_kopie_verkleinert.png` prüfen, Häkchen **„Erweiterung: Perceptual-Hash“** setzen | ⚠ Sieht aus wie NFT #1, 61 von 64 Hash-Zeichen unterschiedlich |
-| 6 | – | Gegenprobe `5_anderes_bild.png` | Kein ähnliches Bild gefunden |
+| 6 | – | Rechts **„✕ Bild entfernen“**, dann Gegenprobe `5_anderes_bild.png` | Kein ähnliches Bild gefunden |
+
+**Buttons:** „✕ Bild entfernen“ leert die jeweilige Karte komplett (Bild, Hash, Ergebnis), um ein neues Bild zu nehmen. „↻ Neu prüfen“ liest den aktuellen Stand frisch von der Blockchain und wiederholt die Echtheitsprüfung, z. B. nachdem links ein neues NFT gemintet wurde.
 
 **Kernaussage nach Schritt 4:** *Die Blockchain hat korrekt gearbeitet und trotzdem ist eine Kopie durchgerutscht. Sie beweist, wem ein Token gehört, aber nicht, ob das Bild dahinter original ist.*
 

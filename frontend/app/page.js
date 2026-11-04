@@ -117,7 +117,7 @@ export default function Home() {
             setFlashId(tokenId);
           }}
         />
-        <CheckCard contract={contract} tokens={tokens} previews={previews} label={label} />
+        <CheckCard contract={contract} tokens={tokens} previews={previews} label={label} onRefresh={refresh} />
       </div>
 
       <section className="card ledger">
@@ -179,6 +179,14 @@ function MintCard({ contract, me, label, onMinted }) {
     if (!name) setName(f.name.replace(/\.[^.]+$/, ""));
   };
 
+  // Bild komplett entfernen, um ein neues zu nehmen
+  const clear = () => {
+    setFile(null);
+    setResult(null);
+    setName("");
+    setDesc("");
+  };
+
   const mint = async () => {
     if (!contract || !file || !me) return;
     setBusy(true);
@@ -218,7 +226,7 @@ function MintCard({ contract, me, label, onMinted }) {
       <h2><span className="step">1</span> NFT erstellen</h2>
       <p className="lead">Bild wählen → SHA-256 wird im Browser berechnet → Smart Contract erzeugt den Token.</p>
 
-      <DropZone file={file} onFile={pick} />
+      <DropZone file={file} onFile={pick} onClear={clear} />
 
       <div className="field">
         <label>Name</label>
@@ -272,17 +280,37 @@ function MintCard({ contract, me, label, onMinted }) {
 // ======================================================================
 // 2 · Echtheit prüfen
 // ======================================================================
-function CheckCard({ contract, tokens, previews, label }) {
+function CheckCard({ contract, tokens, previews, label, onRefresh }) {
   const [file, setFile] = useState(null);
   const [res, setRes] = useState(null);
   const [perceptual, setPerceptual] = useState(false);
+  const [checkRun, setCheckRun] = useState(0);
+  const [reloading, setReloading] = useState(false);
 
   const pick = async (f) => {
     setRes(null);
     setFile(await analyze(f));
   };
 
-  // Prüfen, sobald Datei oder Token-Liste sich ändern
+  // Bild komplett entfernen, um ein neues zu prüfen
+  const clear = () => {
+    setFile(null);
+    setRes(null);
+  };
+
+  // Prüfung neu laden: aktuellen Stand frisch von der Blockchain lesen und erneut prüfen
+  const recheck = async () => {
+    setReloading(true);
+    setRes(null);
+    try {
+      await onRefresh?.();
+      setCheckRun((n) => n + 1);
+    } finally {
+      setReloading(false);
+    }
+  };
+
+  // Prüfen, sobald Datei, Token-Liste oder "Neu prüfen" sich ändern
   useEffect(() => {
     if (!file || !contract) return;
     let cancelled = false;
@@ -299,7 +327,7 @@ function CheckCard({ contract, tokens, previews, label }) {
       if (!cancelled) setRes({ registered: r.registered, tokenId: Number(r.tokenId), owner: r.owner, creator: r.creator, similar });
     })();
     return () => { cancelled = true; };
-  }, [file, contract, tokens]);
+  }, [file, contract, tokens, checkRun]);
 
   const similarHit = res && !res.registered && res.similar && res.similar.dist <= SIMILARITY_THRESHOLD;
 
@@ -308,7 +336,11 @@ function CheckCard({ contract, tokens, previews, label }) {
       <h2><span className="step">2</span> Echtheit prüfen</h2>
       <p className="lead">Wurde diese Datei schon als NFT registriert? Der Contract vergleicht den SHA-256-Hash.</p>
 
-      <DropZone file={file} onFile={pick} />
+      <DropZone file={file} onFile={pick} onClear={clear} />
+
+      <button className="btn secondary" disabled={!file || !contract || reloading} onClick={recheck}>
+        {reloading ? "Lade Blockchain …" : "↻ Neu prüfen"}
+      </button>
 
       {file && (
         <dl className="kv">
@@ -378,7 +410,7 @@ async function analyze(f) {
   return { name: f.name, size: f.size, url: URL.createObjectURL(f), sha, dHash };
 }
 
-function DropZone({ file, onFile }) {
+function DropZone({ file, onFile, onClear }) {
   const input = useRef(null);
   const [over, setOver] = useState(false);
   const take = (f) => f && f.type.startsWith("image/") && onFile(f);
@@ -397,10 +429,20 @@ function DropZone({ file, onFile }) {
         onChange={(e) => { take(e.target.files[0]); e.target.value = ""; }}
       />
       {file ? <img className="thumb" src={file.url} alt="" /> : <div className="thumb empty">🖼</div>}
-      <div>
+      <div className="drop-text">
         <div className="fname">{file ? file.name : "Bild auswählen oder hierher ziehen"}</div>
         <div className="hint">{file ? `${(file.size / 1024).toFixed(1)} KB · klicken zum Wechseln` : "PNG oder JPG"}</div>
       </div>
+      {file && onClear && (
+        <button
+          type="button"
+          className="clear"
+          title="Bild entfernen"
+          onClick={(e) => { e.stopPropagation(); onClear(); }}
+        >
+          ✕ Bild entfernen
+        </button>
+      )}
     </div>
   );
 }
